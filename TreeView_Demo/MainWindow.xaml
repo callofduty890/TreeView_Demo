@@ -1,0 +1,124 @@
+﻿<Window x:Class="TreeView_Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TreeView_Demo"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="300" Width="300">
+    <Window.Resources>
+        <!--TreeView样式-->
+        <Style TargetType="TreeViewItem">
+            <Setter Property="Cursor" Value ="Hand"></Setter>
+            <Setter Property="AllowDrop" Value="True"></Setter>
+            <Setter Property="BorderBrush" Value="#d3d3d3"></Setter>
+            <Setter Property="BorderThickness" Value="1"></Setter>
+            <Setter Property="Foreground" Value="{Binding Path=SetForeground}"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="Parent" TargetType="TreeViewItem">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" x:Name="headBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{Binding Path=ShowBorderThickness}" 
+                                    Tag="{Binding ElementName=PART_Header}" PreviewMouseDown="TreeView_MouseDown">
+                                <ContentPresenter Name="PART_Header" ContentSource="Header" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="{Binding Path=Margining}"/>
+                            </Border>
+                            <ToggleButton x:Name="toggleBtn" Grid.Row="0" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Right" Tag="{Binding ElementName=PART_Header}" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
+                            <Image x:Name="addImg" Grid.Row="0" Width="20" Height="20" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Stretch="Fill"
+                                   Source="pack://siteoforigin:,,,/add_normal.png" Visibility="{Binding Path=ShowAddButton}"></Image>
+                            <ItemsPresenter x:Name="ChildNode" Grid.Row="1"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter TargetName="toggleBtn" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="true">
+                                <Setter TargetName="toggleBtn" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsExpanded" Value="false">
+                                <Setter TargetName="ChildNode" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ChildNode" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="headBorder" Property="Background" Value="#0000FF"/>
+                                <Setter Property="Foreground" Value="#ffffff"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_press.png"/>
+                                <Setter Property="IsExpanded"  Value="{Binding Path=SetIsExpanded}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="headBorder" Property="Background" Value="#0000FF" />
+                                <Setter Property="Foreground" Value="#ffffff"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_press.png"/>
+                                <Setter Property="IsExpanded"  Value="{Binding Path=SetIsExpanded}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="headBorder" Property="Background" Value="#d3d3d3"></Setter>
+                                <Setter Property="Foreground" Value="{Binding Path=SetForeground}"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_normal.png"/>
+                                <Setter Property="IsExpanded" Value="False"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="headBorder" Property="Background" Value="{Binding Path=SetBackground}" />
+                                <Setter Property="Foreground" Value="{Binding Path=SetForeground}"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_normal.png"/>
+                                <Setter Property="IsExpanded" Value="False"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--展开折叠按钮样式-->
+        <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid SnapsToDevicePixels="True">
+                            <Image x:Name="unfold" Source="Resourse/unfold.png" HorizontalAlignment="Left" Stretch="None"></Image>
+                            <Image x:Name="fold" Source="Resources/unfold.png" HorizontalAlignment="Left" Stretch="None"></Image>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Visibility" TargetName="unfold" Value="Visible"/>
+                                <Setter Property="Visibility"  TargetName="fold" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Visibility" TargetName="unfold" Value="Collapsed"/>
+                                <Setter Property="Visibility" TargetName="fold" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+    </Window.Resources>
+    <Grid>
+        <TreeView  x:Name="treeView" Background="Transparent" MinWidth="280" Width="200" ></TreeView>
+    </Grid>
+</Window>
