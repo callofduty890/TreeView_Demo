@@ -32,15 +32,19 @@ namespace TreeView_Demo
         /// </summary>
         private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            //获取选中的索引对象
             TreeViewItem SelectedfItem = new TreeViewItem();
+            //获取点击的类型
             if (sender.GetType() == typeof(ToggleButton))
             {
+                //构建一个byte
                 ToggleButton btn = (ToggleButton)sender;
                 System.Windows.Controls.ContentPresenter CP = (System.Windows.Controls.ContentPresenter)btn.Tag;
                 SelectedfItem = (TreeViewItem)CP.TemplatedParent;
             }
             else if (sender.GetType() == typeof(Border))
             {
+                //进行里式转换
                 Border btn = (Border)sender;
                 System.Windows.Controls.ContentPresenter CP = (System.Windows.Controls.ContentPresenter)btn.Tag;
                 SelectedfItem = (TreeViewItem)CP.TemplatedParent;
