@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TreeView_Demo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="300">
+        Title="MainWindow" Height="500" Width="300">
     <Window.Resources>
         <!--TreeView样式-->
         <Style TargetType="TreeViewItem">
@@ -54,7 +54,7 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="headBorder" Property="Background" Value="#0000FF"/>
                                 <Setter Property="Foreground" Value="#ffffff"/>
-                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_press.png"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resources/add_press.png"/>
                                 <Setter Property="IsExpanded"  Value="{Binding Path=SetIsExpanded}"/>
                             </MultiTrigger>
                             <MultiTrigger>
@@ -64,7 +64,7 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="headBorder" Property="Background" Value="#0000FF" />
                                 <Setter Property="Foreground" Value="#ffffff"/>
-                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_press.png"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resources/add_press.png"/>
                                 <Setter Property="IsExpanded"  Value="{Binding Path=SetIsExpanded}"/>
                             </MultiTrigger>
                             <MultiTrigger>
@@ -74,7 +74,7 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="headBorder" Property="Background" Value="#d3d3d3"></Setter>
                                 <Setter Property="Foreground" Value="{Binding Path=SetForeground}"/>
-                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_normal.png"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resources/add_normal.png"/>
                                 <Setter Property="IsExpanded" Value="False"/>
                             </MultiTrigger>
                             <MultiTrigger>
@@ -84,13 +84,18 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="headBorder" Property="Background" Value="{Binding Path=SetBackground}" />
                                 <Setter Property="Foreground" Value="{Binding Path=SetForeground}"/>
-                                <Setter TargetName="addImg" Property="Source" Value="Resourse/add_normal.png"/>
+                                <Setter TargetName="addImg" Property="Source" Value="Resources/add_normal.png"/>
                                 <Setter Property="IsExpanded" Value="False"/>
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <EventSetter Event="DragEnter" Handler="TreeView_DragEnter"></EventSetter>
+            <EventSetter Event="DragLeave" Handler="TreeView_DragLeave"></EventSetter>
+            <EventSetter Event="DragOver" Handler="TreeView_DragEnter"></EventSetter>
+            <EventSetter Event="Drop" Handler="TreeView_Drop"></EventSetter>
+            <EventSetter Event="MouseMove" Handler="TreeView_MouseMove"></EventSetter>
         </Style>
         <!--展开折叠按钮样式-->
         <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
@@ -99,8 +104,8 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Grid SnapsToDevicePixels="True">
-                            <Image x:Name="unfold" Source="Resourse/unfold.png" HorizontalAlignment="Left" Stretch="None"></Image>
-                            <Image x:Name="fold" Source="Resources/unfold.png" HorizontalAlignment="Left" Stretch="None"></Image>
+                            <Image x:Name="unfold" Source="Resources/unfold.png" HorizontalAlignment="Left" Stretch="None"></Image>
+                            <Image x:Name="fold" Source="Resources/fold.png" HorizontalAlignment="Left" Stretch="None"></Image>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
@@ -119,6 +124,16 @@
         
     </Window.Resources>
     <Grid>
-        <TreeView  x:Name="treeView" Background="Transparent" MinWidth="280" Width="200" ></TreeView>
+        <TreeView x:Name="treeView" Background="Transparent" MinHeight="280" Width="200"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  MouseDoubleClick="TreeView_MouseDoubleClick"
+            >
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=ChildNodes}">
+                    <TextBlock x:Name="showName" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,8,0,0" Height="26"
+                               FontSize="{Binding Path=SetFontSize}" FontWeight="{Binding Path=SetFontWeight}" Text="{Binding Path=NodeName, Mode=TwoWay}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </Window>
